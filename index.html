@@ -1,87 +1,117 @@
 <!DOCTYPE html><html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Робототехника — презентация</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
-      color: white;
-      overflow: hidden;
-    }.slide {
+    * { box-sizing: border-box; }html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at center, #1a1a2e, #0f0f1a);
+  color: white;
+  touch-action: manipulation; /* убирает "качание" */
+}
+
+.slide {
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 60px;
+  padding: 40px;
   opacity: 0;
-  transform: scale(0.95);
-  transition: all 0.6s ease;
+  transform: translateX(100%);
+  transition: transform 0.6s ease, opacity 0.6s ease;
 }
 
 .slide.active {
   opacity: 1;
-  transform: scale(1);
-  z-index: 1;
+  transform: translateX(0);
+  z-index: 2;
+}
+
+.slide.prev {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.card {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  text-align: center;
+  max-width: 700px;
 }
 
 h1 {
-  font-size: 3.5em;
-  margin-bottom: 20px;
+  font-size: 2.8em;
+  margin-bottom: 15px;
   background: linear-gradient(90deg, #00f5ff, #7b2cff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 p {
-  font-size: 1.4em;
-  max-width: 800px;
-  line-height: 1.6;
+  font-size: 1.2em;
   opacity: 0.9;
 }
 
-.card {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-
 img {
-  width: 300px;
-  border-radius: 20px;
-  margin-top: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  width: 220px;
+  margin-top: 15px;
+  border-radius: 14px;
 }
 
 .progress {
   position: fixed;
   bottom: 0;
   left: 0;
-  height: 5px;
+  height: 4px;
   background: linear-gradient(90deg, #00f5ff, #7b2cff);
   transition: width 0.4s;
 }
 
-.hint {
+.fullscreen-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  opacity: 0.5;
-  font-size: 0.9em;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.rotate-hint {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #000;
+  z-index: 10;
+  font-size: 1.5em;
+}
+
+@media (orientation: portrait) {
+  .rotate-hint {
+    display: flex;
+  }
 }
 
   </style>
 </head>
-<body><div class="slide active">
+<body><div class="rotate-hint">Поверни телефон горизонтально 📱➡️</div><button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+
+<div class="slide active">
   <div class="card">
     <h1>Робототехника</h1>
     <p>Будущее технологий уже здесь 🤖</p>
@@ -89,36 +119,26 @@ img {
 </div><div class="slide">
   <div class="card">
     <h1>Что это?</h1>
-    <p>Робототехника объединяет программирование, механику и электронику для создания умных машин.</p>
-    <img src="https://images.unsplash.com/photo-1581091870622-6c0f4d2c0f39" />
-  </div>
-</div><div class="slide">
-  <div class="card">
-    <h1>Где используется?</h1>
-    <p>Промышленность, медицина, космос и даже дома.</p>
-    <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc" />
-  </div>
-</div><div class="slide">
-  <div class="card">
-    <h1>Примеры</h1>
-    <p>Дроны, роботы-пылесосы, гуманоиды и заводские манипуляторы.</p>
-    <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f" />
+    <p>Программирование + механика + электроника.</p>
+    <img src="https://images.unsplash.com/photo-1581091870622-6c0f4d2c0f39">
   </div>
 </div><div class="slide">
   <div class="card">
     <h1>Будущее</h1>
-    <p>Искусственный интеллект и полностью автономные системы изменят мир.</p>
-    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" />
+    <p>ИИ и автономные роботы изменят мир.</p>
+    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d">
   </div>
-</div><div class="progress" id="progress"></div>
-<div class="hint">Кликни в любое место →</div><script>
+</div><div class="progress" id="progress"></div><script>
   const slides = document.querySelectorAll('.slide');
   const progress = document.getElementById('progress');
   let current = 0;
 
   function update() {
-    slides.forEach(s => s.classList.remove('active'));
-    slides[current].classList.add('active');
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === current) s.classList.add('active');
+      else if (i < current) s.classList.add('prev');
+    });
     progress.style.width = ((current + 1) / slides.length * 100) + '%';
   }
 
@@ -138,6 +158,15 @@ img {
     if (e.key === 'ArrowLeft') prev();
   });
 
+  // fullscreen
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
   update();
 </script></body>
-  </html>
+</html>
