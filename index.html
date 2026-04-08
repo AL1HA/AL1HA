@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Робототехника — презентация</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+      color: white;
+      overflow: hidden;
+    }.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 60px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.6s ease;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+
+h1 {
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #00f5ff, #7b2cff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+p {
+  font-size: 1.4em;
+  max-width: 800px;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+img {
+  width: 300px;
+  border-radius: 20px;
+  margin-top: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.progress {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #00f5ff, #7b2cff);
+  transition: width 0.4s;
+}
+
+.hint {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0.5;
+  font-size: 0.9em;
+}
+
+  </style>
+</head>
+<body><div class="slide active">
+  <div class="card">
+    <h1>Робототехника</h1>
+    <p>Будущее технологий уже здесь 🤖</p>
+  </div>
+</div><div class="slide">
+  <div class="card">
+    <h1>Что это?</h1>
+    <p>Робототехника объединяет программирование, механику и электронику для создания умных машин.</p>
+    <img src="https://images.unsplash.com/photo-1581091870622-6c0f4d2c0f39" />
+  </div>
+</div><div class="slide">
+  <div class="card">
+    <h1>Где используется?</h1>
+    <p>Промышленность, медицина, космос и даже дома.</p>
+    <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc" />
+  </div>
+</div><div class="slide">
+  <div class="card">
+    <h1>Примеры</h1>
+    <p>Дроны, роботы-пылесосы, гуманоиды и заводские манипуляторы.</p>
+    <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f" />
+  </div>
+</div><div class="slide">
+  <div class="card">
+    <h1>Будущее</h1>
+    <p>Искусственный интеллект и полностью автономные системы изменят мир.</p>
+    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d" />
+  </div>
+</div><div class="progress" id="progress"></div>
+<div class="hint">Кликни в любое место →</div><script>
+  const slides = document.querySelectorAll('.slide');
+  const progress = document.getElementById('progress');
+  let current = 0;
+
+  function update() {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[current].classList.add('active');
+    progress.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function next() {
+    current = (current + 1) % slides.length;
+    update();
+  }
+
+  function prev() {
+    current = (current - 1 + slides.length) % slides.length;
+    update();
+  }
+
+  document.addEventListener('click', next);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+  });
+
+  update();
+</script></body>
+  </html>
