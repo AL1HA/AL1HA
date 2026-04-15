@@ -1,172 +1,213 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Робототехника — презентация</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; }html, body {
-  margin: 0;
-  height: 100%;
-  overflow: hidden;
-  font-family: 'Inter', sans-serif;
-  background: radial-gradient(circle at center, #1a1a2e, #0f0f1a);
-  color: white;
-  touch-action: manipulation; /* убирает "качание" */
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ROBOTICS_V14_ULTIMATE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --p: #bc13fe;
+            --c: #00f2fe;
+            --bg: #000;
+            --glass: rgba(15, 15, 25, 0.9);
+        }
 
-.slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
-  opacity: 0;
-  transform: translateX(100%);
-  transition: transform 0.6s ease, opacity 0.6s ease;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.slide.active {
-  opacity: 1;
-  transform: translateX(0);
-  z-index: 2;
-}
+        body, html {
+            width: 100%; height: 100%;
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+        }
 
-.slide.prev {
-  transform: translateX(-100%);
-  opacity: 0;
-}
+        /* Блокировка ориентации */
+        #lock {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+        }
+        @media screen and (orientation: portrait) { #lock { display: flex; } }
 
-.card {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(14px);
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  text-align: center;
-  max-width: 700px;
-}
+        #grid {
+            position: fixed; inset: 0;
+            background-image: linear-gradient(rgba(188, 19, 254, 0.1) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(188, 19, 254, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: -1;
+        }
 
-h1 {
-  font-size: 2.8em;
-  margin-bottom: 15px;
-  background: linear-gradient(90deg, #00f5ff, #7b2cff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+        #fs-btn {
+            position: fixed; top: 15px; right: 15px; z-index: 9000;
+            width: 45px; height: 45px; border: 1px solid var(--p);
+            background: var(--glass); color: var(--p); border-radius: 12px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
 
-p {
-  font-size: 1.2em;
-  opacity: 0.9;
-}
+        /* Слайды */
+        .slide {
+            position: absolute; inset: 0;
+            display: flex; padding: 40px; gap: 40px;
+            opacity: 0; visibility: hidden;
+            transition: 0.6s ease-in-out;
+            align-items: center;
+        }
+        .slide.active { opacity: 1; visibility: visible; }
 
-img {
-  width: 220px;
-  margin-top: 15px;
-  border-radius: 14px;
-}
+        /* СТОРОНЫ */
+        .side { flex: 1; display: flex; flex-direction: column; justify-content: center; height: 100%; }
 
-.progress {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #00f5ff, #7b2cff);
-  transition: width 0.4s;
-}
+        /* Блок текста с прокруткой */
+        .text-scroll {
+            background: var(--glass);
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .text-scroll::-webkit-scrollbar { width: 4px; }
+        .text-scroll::-webkit-scrollbar-thumb { background: var(--p); border-radius: 10px; }
 
-.fullscreen-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  background: rgba(255,255,255,0.1);
-  border: none;
-  padding: 10px 15px;
-  border-radius: 10px;
-  color: white;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-}
+        /* Котик */
+        .cat-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+        .bubble {
+            background: var(--p); color: #000; padding: 12px 20px;
+            border-radius: 15px; font-weight: bold; margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); position: relative;
+            text-align: center; max-width: 350px;
+        }
+        .bubble::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%;
+            border-left: 8px solid transparent; border-right: 8px solid transparent;
+            border-top: 8px solid var(--p); transform: translateX(-50%);
+        }
 
-.rotate-hint {
-  position: fixed;
-  inset: 0;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: #000;
-  z-index: 10;
-  font-size: 1.5em;
-}
+        .cat-img { 
+            width: 180px; 
+            border-radius: 20px; /* Закругление кота */
+            border: 2px solid var(--p); /* Фиолетовая обводка */
+            mix-blend-mode: screen; 
+            filter: brightness(1.2); 
+        }
 
-@media (orientation: portrait) {
-  .rotate-hint {
-    display: flex;
-  }
-}
+        /* Картинки презентации */
+        .main-img {
+            width: 100%; height: auto; max-height: 70vh;
+            object-fit: cover; border-radius: 25px;
+            border: 1px solid var(--p);
+            box-shadow: 0 0 25px rgba(188, 19, 254, 0.2);
+        }
 
-  </style>
+        h1 { font-family: 'Orbitron'; color: var(--p); margin-bottom: 15px; font-size: 2.2rem; }
+        p { font-size: 1.2rem; line-height: 1.6; color: #ddd; margin-bottom: 12px; }
+
+        /* Кнопки */
+        .nav-ui {
+            position: fixed; bottom: 20px; left: 0; width: 100%;
+            display: flex; justify-content: space-between; padding: 0 30px; z-index: 8500;
+        }
+        .btn {
+            background: var(--glass); border: 1px solid var(--p); color: #fff;
+            padding: 12px 30px; border-radius: 12px; cursor: pointer; font-family: 'Orbitron';
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+        }
+        .btn:hover { background: var(--p); color: #000; }
+    </style>
 </head>
-<body><div class="rotate-hint">Поверни телефон горизонтально 📱➡️</div><button class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+<body>
 
-<div class="slide active">
-  <div class="card">
-    <h1>Робототехника</h1>
-    <p>Будущее технологий уже здесь 🤖</p>
-  </div>
-</div><div class="slide">
-  <div class="card">
-    <h1>Что это?</h1>
-    <p>Программирование + механика + электроника.</p>
-    <img src="https://images.unsplash.com/photo-1581091870622-6c0f4d2c0f39">
-  </div>
-</div><div class="slide">
-  <div class="card">
-    <h1>Будущее</h1>
-    <p>ИИ и автономные роботы изменят мир.</p>
-    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d">
-  </div>
-</div><div class="progress" id="progress"></div><script>
-  const slides = document.querySelectorAll('.slide');
-  const progress = document.getElementById('progress');
-  let current = 0;
+    <div id="lock"><h2>ПОВЕРНИТЕ ТЕЛЕФОН</h2></div>
+    <div id="grid"></div>
+    <button id="fs-btn" onclick="toggleFS()">⛶</button>
 
-  function update() {
-    slides.forEach((s, i) => {
-      s.classList.remove('active', 'prev');
-      if (i === current) s.classList.add('active');
-      else if (i < current) s.classList.add('prev');
-    });
-    progress.style.width = ((current + 1) / slides.length * 100) + '%';
-  }
+    <div class="nav-ui">
+        <button class="btn" onclick="nav(-1)">Назад</button>
+        <button class="btn" onclick="nav(1)">Вперед</button>
+    </div>
 
-  function next() {
-    current = (current + 1) % slides.length;
-    update();
-  }
+    <div id="stage">
+        <div class="slide active">
+            <div class="side">
+                <div class="cat-container">
+                    <div class="bubble">Привет, сегодня я вам покажу презентацию на тему "Робототехника"</div>
+                    <img src="https://avatars.mds.yandex.net/i?id=eb9096a414d09ea43de8944f32524895_l-5544858-images-thumbs&n=33&w=977&h=1222" class="cat-img">
+                </div>
+            </div>
+            <div class="side">
+                <div class="text-scroll">
+                    <h1>ВСТУПЛЕНИЕ</h1>
+                    <p>Робототехника — это междисциплинарная область, которая объединяет электронику, механику и программирование.</p>
+                    <p>Сегодня роботы выполняют задачи, которые раньше считались невозможными для машин.</p>
+                    <p>Мы рассмотрим, как автоматизация меняет промышленность, спасает жизни и помогает исследовать Вселенную.</p>
+                    <p>Этот путь в будущее начинается здесь и сейчас, под руководством нашего цифрового помощника.</p>
+                </div>
+            </div>
+        </div>
 
-  function prev() {
-    current = (current - 1 + slides.length) % slides.length;
-    update();
-  }
+        <div class="slide">
+            <div class="side">
+                <div class="text-scroll">
+                    <h1>ЗАВОДЫ</h1>
+                    <p>Промышленные роботы — это основа современного производства любого масштаба.</p>
+                    <p>Они обладают феноменальной точностью, выполняя тысячи циклов без малейшей погрешности.</p>
+                    <p>Использование машин на производстве исключает человеческий фактор в опасных условиях труда.</p>
+                    <p>Это не просто замена труда, а переход к новому качеству жизни для всего человечества.</p>
+                </div>
+            </div>
+            <div class="side">
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800" class="main-img">
+            </div>
+        </div>
 
-  document.addEventListener('click', next);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'ArrowLeft') prev();
-  });
+        <div class="slide">
+            <div class="side">
+                <div class="text-scroll">
+                    <h1>МЕДИЦИНА</h1>
+                    <p>Роботизированные хирургические комплексы позволяют врачам работать на микроскопическом уровне.</p>
+                    <p>Умные алгоритмы помогают диагностировать заболевания на самых ранних стадиях с высокой точностью.</p>
+                    <p>Автоматизированные системы реабилитации помогают людям заново учиться ходить после травм.</p>
+                    <p>Будущее здравоохранения неразрывно связано с искусственным интеллектом и роботами.</p>
+                </div>
+            </div>
+            <div class="side">
+                <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=800" class="main-img">
+            </div>
+        </div>
 
-  // fullscreen
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  }
+        <div class="slide">
+            <div class="side">
+                <div class="cat-container">
+                    <div class="bubble">Спасибо за внимание!</div>
+                    <img src="https://avatars.mds.yandex.net/i?id=eb9096a414d09ea43de8944f32524895_l-5544858-images-thumbs&n=33&w=977&h=1222" class="cat-img">
+                </div>
+            </div>
+            <div class="side">
+                <div class="text-scroll">
+                    <h1>ИТОГИ</h1>
+                    <p>Мы увидели лишь малую часть того, на что способны современные робототехнические системы.</p>
+                    <p>Технологии продолжают развиваться, делая нашу жизнь комфортнее и безопаснее с каждым годом.</p>
+                    <p>Надеюсь, эта презентация открыла для вас новые грани мира высоких технологий.</p>
+                    <p style="color:var(--c); font-weight: bold;">До новых встреч в мире будущего!</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  update();
-</script></body>
+    <script>
+        let cur = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function nav(d) {
+            slides[cur].classList.remove('active');
+            cur = (cur + d + slides.length) % slides.length;
+            slides[cur].classList.add('active');
+        }
+
+        function toggleFS() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
+        }
+    </script>
+</body>
 </html>
